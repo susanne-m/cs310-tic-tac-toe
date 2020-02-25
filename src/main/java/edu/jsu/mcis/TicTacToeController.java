@@ -1,5 +1,4 @@
 package edu.jsu.mcis;
-
 public class TicTacToeController {
 
     private final TicTacToeModel model;
@@ -10,9 +9,10 @@ public class TicTacToeController {
     public TicTacToeController(int width) {
         
         /* Initialize model, view, and width */
-
+        width = TicTacToe.DEFAULT_WIDTH;
         model = new TicTacToeModel(width);
         view = new TicTacToeView();
+        
         
     }
 
@@ -26,6 +26,21 @@ public class TicTacToeController {
            using the View's "showInputError()" if the move is invalid. */
 
         // INSERT YOUR CODE HERE
+        while(model.isGameover()!= true){
+            view.showBoard(model.toString());
+            
+                view.getNextMove(model.xTurn);
+                int row = TicTacToeView.moves.getRow();
+                int col = TicTacToeView.moves.getCol();
+                if(model.isValidSquare(row, col)== true){
+                    model.makeMark(row, col);  
+                }
+                else{
+                    view.showInputError();
+                }  
+                }
+            
+        
         
         /* After the game is over, show the final board and the winner */
 
