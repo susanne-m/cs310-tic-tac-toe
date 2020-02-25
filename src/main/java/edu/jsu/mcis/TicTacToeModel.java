@@ -1,10 +1,12 @@
 package edu.jsu.mcis;
 
 public class TicTacToeModel {
-    
+
     private Mark[][] board; /* Game board */
-    private boolean xTurn;  /* True if X is current player */
+    public boolean xTurn;  /* True if X is current player */
     private int width;      /* Size of game board */
+    private boolean MarkX;
+    private boolean MarkO;
     
     /* ENUM TYPE DEFINITIONS */
     
@@ -16,7 +18,7 @@ public class TicTacToeModel {
         O("O"), 
         EMPTY("-");
 
-        private String message;
+        private final String message;
         
         private Mark(String msg) {
             message = msg;
@@ -39,7 +41,7 @@ public class TicTacToeModel {
         TIE("TIE"), 
         NONE("NONE");
 
-        private String message;
+        private final String message;
         
         private Result(String msg) {
             message = msg;
@@ -69,6 +71,7 @@ public class TicTacToeModel {
         this.width = width;
         xTurn = true;
         
+        
         /* Create board (width x width) as a 2D Mark array */
         
         board = new Mark[width][width];
@@ -76,6 +79,13 @@ public class TicTacToeModel {
         /* Initialize board by filling every square with empty marks */
         
         // INSERT YOUR CODE HERE
+        for(int i = 0; i < width; i++){
+            for(int j = 0; j < width; j++){
+                
+                board[i][j] = Mark.EMPTY ;
+            }
+                
+        }
         
     }
 	
@@ -88,29 +98,69 @@ public class TicTacToeModel {
            other player before returning TRUE.  Otherwise, return FALSE. */
         
         // INSERT YOUR CODE HERE
-        
-        return false; // remove this line later!
-        
+            if(isValidSquare(row,col) == true){
+            if(isSquareMarked(row, col) != true){
+                if(xTurn == true){
+                    board[row][col] = Mark.X;
+                    xTurn = !xTurn;
+                    return true;
+                }
+                if(xTurn != true){
+                    board[row][col] = Mark.O;
+                    xTurn = !xTurn;
+                    return true;
+            }
+            }
+            else{
+                return false;
+            }
+        }
+            else{
+          return false;
+        }
+         return true;   
     }
 	
-    private boolean isValidSquare(int row, int col) {
+    public boolean isValidSquare(int row, int col) {
         
         /* Return TRUE if the specified location is within the bounds of the board */
         
         // INSERT YOUR CODE HERE
 
-        return false; // remove this line later!
-        
+        if ((row >= 0) && (row < width)) {
+            if((col >= 0) && (col < width)) {
+
+                    return true;
+                }
+            else{
+                return false;
+            }
+            }
+             
+        else{
+            return false;
+        } 
     }
 	
     private boolean isSquareMarked(int row, int col) {
         
         /* Return TRUE if the square at specified location is marked */
-        
+        MarkX= (board[row][col] == Mark.X);
+        MarkO= (board[row][col] == Mark.O);
         // INSERT YOUR CODE HERE
-
-        return false; // remove this line later!
-            
+          if ((row >= 0) && (row < width)) {
+            if ((col >= 0) && (col < width)) {
+                if(MarkX == true){
+                    return true;
+                }
+                else if(MarkO == true){
+                    return true;
+                }
+                
+                }
+            }
+             
+        return false;    
     }
 	
     public Mark getMark(int row, int col) {
@@ -119,7 +169,7 @@ public class TicTacToeModel {
         
         // INSERT YOUR CODE HERE
 
-        return null; // remove this line later!
+        return (board[row][col]);
             
     }
 	
@@ -131,7 +181,21 @@ public class TicTacToeModel {
         
         // INSERT YOUR CODE HERE
 
-        return null; // remove this line later!
+        if(isMarkWin(Mark.O)== true){
+            
+            return Result.O;
+        }
+        if(isMarkWin(Mark.X)== true){
+            
+            return Result.X;
+        }
+        if(isTie()== true){
+            
+            return Result.TIE;
+        }
+
+            return Result.NONE;
+        
         
     }
 	
@@ -142,9 +206,26 @@ public class TicTacToeModel {
         
         // INSERT YOUR CODE HERE
 
-        return false; // remove this line later!
-
-    }
+              if (mark.equals(board[0][0]) && mark.equals(board[0][1]) && mark.equals(board[0][2])){
+                return true;}
+            else if (mark.equals(board[1][0]) && mark.equals(board[1][1]) && mark.equals(board[1][2])){
+                return true;}
+            else if (mark.equals(board[2][0]) && mark.equals(board[2][1]) && mark.equals(board[2][2])){
+                return true;}
+            else if (mark.equals(board[0][0]) && mark.equals(board[1][0]) && mark.equals(board[2][0])){
+                return true;}
+            else if (mark.equals(board[0][1]) && mark.equals(board[1][1]) && mark.equals(board[2][1])){
+                return true;}
+            else if (mark.equals(board[0][2]) && mark.equals(board[1][2]) && mark.equals(board[2][2])){
+                return true;}
+            else if (mark.equals(board[0][0]) && mark.equals(board[1][1]) && mark.equals(board[2][2])){
+                return true;}
+        else if (mark.equals(board[0][2]) && mark.equals(board[1][1]) && mark.equals(board[2][0])){
+             return true;}
+        else{
+        return false;
+        }
+}
 	
     private boolean isTie() {
         
@@ -152,16 +233,34 @@ public class TicTacToeModel {
         
         // INSERT YOUR CODE HERE
 
-        return false; // remove this line later!
-        
+        boolean isFull = true;
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < width; j++) {
+                if (board[i][j] == Mark.EMPTY) {
+                    isFull = false;
+                }
+            }
     }
+        return false;
+    }
+    
 
     public boolean isGameover() {
         
         /* Return TRUE if the game is over */
         
-        return (Result.NONE != getResult());
-        
+        if(isMarkWin(Mark.X)== true){
+            return true;
+        }
+        if(isMarkWin(Mark.O)== true){
+            return true;
+        }
+        if(isTie()== true){
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     public boolean isXTurn() {
@@ -183,14 +282,36 @@ public class TicTacToeModel {
     @Override
     public String toString() {
         
-        StringBuilder output = new StringBuilder("  ");
+        StringBuilder output = new StringBuilder();
         
         /* Output the board contents as a string (see examples) */
         
         // INSERT YOUR CODE HERE
+       output.append("  012 \n");
+        for (int i = 0; i < width; i++) {
+            output.append(i);
+            output.append(" ");
+            for (int j = 0; j < width; j++) {
+                switch(board[i][j]){
+                    case X:
+                        output.append("X");
+                        break;
+                    case O:
+                        output.append("O");
+                        break;
+                        
+                    case EMPTY:
+                        output.append("-");
+                        break;
+                }
+                
+                
+            }
+            output.append("\n");
+        }
         
         return output.toString();
         
     }
-    
+  
 }
